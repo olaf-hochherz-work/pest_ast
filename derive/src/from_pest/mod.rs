@@ -133,7 +133,7 @@ fn derive_for_struct(
         unimplemented!("Grammar introspection not implemented yet")
     }
 
-    let construct = field::convert(&parse_quote!(#name), fields)?;
+    let construct = field::struct_convert(&parse_quote!(#name), fields)?;
 
     let extraneous = crate::trace(
         quote! { "when converting {}, found extraneous {:?}", stringify!(#name), inner},
@@ -177,8 +177,8 @@ fn derive_for_enum(
     let convert_variants: Vec<TokenStream> = variants
         .into_iter()
         .map(|variant| {
-            let variant_name = variant.ident;
-            let construct_variant = field::convert(&parse_quote!(#name::#variant_name), variant.fields)?;
+            let variant_name = &variant.ident;
+            let construct_variant = field::enum_convert(&parse_quote!(#name::#variant_name), &variant)?;
             let extraneous = crate::trace(quote! {
                 "when converting {}, found extraneous {:?}", stringify!(#name), stringify!(#variant_name)
             });
