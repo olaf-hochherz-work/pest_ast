@@ -187,15 +187,21 @@ fn derive_for_enum(
                 let span = pair.as_span();
                 let mut inner = pair.clone().into_inner();
                 let inner = &mut inner;
-                let this = #construct_variant;
-                if inner.clone().next().is_some() {
-                    #extraneous
-                    Err(::from_pest::ConversionError::Extraneous {
-                        current_node: stringify!(#variant_name),
-                    })?;
+                let mut clone = inner.clone();
+                let pair = clone.next().ok_or(::from_pest::ConversionError::NoMatch)?;
+                if pair.as_rule() == #rule_enum::#variant_name {
+                    let this = #construct_variant;
+                    if inner.clone().next().is_some() {
+                        #extraneous
+                        Err(::from_pest::ConversionError::Extraneous {
+                            current_node: stringify!(#variant_name),
+                        })?;
+                    }
+                    Ok(this)
+                } else {
+                    Err(e)
                 }
-                Ok(this)
-            })
+        })
         })
         .collect::<Result<_>>()?;
 
@@ -204,7 +210,7 @@ fn derive_for_enum(
         let pair = clone.next().ok_or(::from_pest::ConversionError::NoMatch)?;
         if pair.as_rule() == #rule_enum::#rule_variant {
             let this = Err(::from_pest::ConversionError::NoMatch)
-                #(.or_else(|_: ::from_pest::ConversionError<::from_pest::Void>| {
+                #(.or_else(|e: ::from_pest::ConversionError<::from_pest::Void>| {
                     #convert_variants
                 }))*?;
             *pest = clone;
