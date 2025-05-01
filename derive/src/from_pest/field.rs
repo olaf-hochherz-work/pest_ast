@@ -3,7 +3,7 @@ use syn::Variant;
 use {
     proc_macro2::{Span, TokenStream},
     syn::{
-        parse::Error, parse::Result, parse_quote, spanned::Spanned, Fields, Index, Member, Path,
+        Fields, Index, Member, Path, parse::Error, parse::Result, parse_quote, spanned::Spanned,
     },
 };
 
@@ -130,10 +130,10 @@ pub fn enum_convert(name: &Path, variant: &Variant) -> Result<TokenStream> {
             quote!(#name(#(#fields),*))
         }
         Fields::Unit => {
-            let attrs = FieldAttribute::from_attributes(variant.attrs.clone())?;
-            let real_name =
-                ConversionStrategy::from_attrs(attrs)?.apply(Member::Unnamed(Index::from(0)));
-            quote!(#real_name)
+            quote!({
+                inner.next();
+                #name
+            })
         }
     })
 }

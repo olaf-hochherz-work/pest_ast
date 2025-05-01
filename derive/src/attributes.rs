@@ -7,11 +7,11 @@ use {
     proc_macro2::TokenStream,
     quote::ToTokens,
     syn::{
+        Attribute, Ident, LitStr, Path,
         parse::{Error, Parse, ParseStream, Parser, Result},
         punctuated::Punctuated,
         spanned::Spanned,
         token::Paren,
-        Attribute, Ident, LitStr, Path,
     },
 };
 
