@@ -20,8 +20,8 @@ itertools = "0.10"
 
 [dev-dependencies]
 from-pest = { version = "0.3", path = ".." }
-pest = "2.5"
-pest_derive = "2.5"
+pest = "2.8"
+pest_derive = "2.8"
 
 [features]
 default = ["trace"]
